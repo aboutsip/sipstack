@@ -1,0 +1,64 @@
+package io.sipstack.netty.codec.sip;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.DatagramPacket;
+import io.netty.handler.codec.MessageToMessageDecoder;
+import io.pkts.buffer.Buffer;
+import io.pkts.buffer.Buffers;
+import io.pkts.packet.sip.SipMessage;
+import io.pkts.packet.sip.impl.SipInitialLine;
+import io.pkts.packet.sip.impl.SipParser;
+import io.pkts.packet.sip.impl.SipRequestImpl;
+import io.pkts.packet.sip.impl.SipResponseImpl;
+
+import java.util.List;
+
+/**
+ * The {@link SipMessageDecoder} will frame an incoming UDP packet into a
+ * {@link SipMessage}. Since the data will only be framed, only very minimal
+ * checking of whether the data is actually a valid SIP message or not will be
+ * performed. It is up to the user to validate the SipMessage through the method
+ * {@link SipMessage#verify()}. The philosophy is to simply just frame things as
+ * fast as possible and then do lazy parsing as much as possible.
+ * 
+ * @author jonas@jonasborjesson.com
+ */
+public final class SipMessageDecoder extends MessageToMessageDecoder<DatagramPacket> {
+
+    public SipMessageDecoder() {
+        // left empty intentionally
+    }
+
+    /**
+     * Framing an UDP packet is much simpler than for a stream based protocol
+     * like TCP. We just assumes that everything is correct and therefore all is
+     * needed is to read the first line, which is assumed to be a SIP initial
+     * line, then read all headers as one big block and whatever is left better
+     * be the payload (if there is one).
+     * 
+     * Of course, things do go wrong. If e.g. the UDP packet is fragmented, then
+     * we may end up with a partial SIP message but the user can either decide
+     * to double check things by calling {@link SipMessage#verify()} or the user
+     * will eventually notice when trying to access partial headers etc.
+     * 
+     */
+    @Override
+    protected void decode(final ChannelHandlerContext ctx, final DatagramPacket msg, final List<Object> out)
+            throws Exception {
+        final ByteBuf content = msg.content();
+        final byte[] b = new byte[content.readableBytes()];
+        content.getBytes(0, b);
+        final Buffer buffer = Buffers.wrap(b);
+        SipParser.consumeSWS(buffer);
+
+        final SipInitialLine initialLine = SipInitialLine.parse(buffer.readLine());
+        final Buffer headers = buffer.readUntilDoubleCRLF();
+        if (initialLine.isRequestLine()) {
+            out.add(new SipRequestImpl(initialLine.toRequestLine(), headers, buffer));
+        } else {
+            out.add(new SipResponseImpl(initialLine.toResponseLine(), headers, buffer));
+        }
+    }
+
+}
