@@ -10,7 +10,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import io.pkts.packet.sip.SipMessageFactory;
+import io.pkts.packet.sip.impl.SipMessageFactoryImpl;
 import io.sipstack.netty.codec.sip.SipMessageDecoder;
+import io.sipstack.netty.codec.sip.SipMessageEncoder;
 
 import java.net.InetSocketAddress;
 
@@ -23,6 +26,8 @@ public class Server {
     private final String ip;
 
     private final int port;
+
+    private final SipMessageFactory msgFactory = new SipMessageFactoryImpl();
 
     public Server(final String ip, final int port) {
         this.ip = ip;
@@ -40,7 +45,8 @@ public class Server {
                         protected void initChannel(final DatagramChannel ch) throws Exception {
                             final ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("decoder", new SipMessageDecoder());
-                            pipeline.addLast("handler", new SipHandler());
+                            pipeline.addLast("encoder", new SipMessageEncoder());
+                            pipeline.addLast("handler", new SipHandler(Server.this.msgFactory));
                         }
                     });
 

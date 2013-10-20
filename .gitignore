@@ -3,6 +3,8 @@
 .project
 .settings
 
+.idea
+
 # Where maven compiles by default
 target
 
