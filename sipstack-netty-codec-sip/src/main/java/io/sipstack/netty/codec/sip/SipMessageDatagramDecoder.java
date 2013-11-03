@@ -15,8 +15,8 @@ import io.pkts.packet.sip.impl.SipResponseImpl;
 import java.util.List;
 
 /**
- * The {@link SipMessageDecoder} will frame an incoming UDP packet into a
- * {@link SipMessage}. Since the data will only be framed, only very minimal
+ * The {@link SipMessageDatagramDecoder} will frame an incoming UDP packet into
+ * a {@link SipMessage}. Since the data will only be framed, only very minimal
  * checking of whether the data is actually a valid SIP message or not will be
  * performed. It is up to the user to validate the SipMessage through the method
  * {@link SipMessage#verify()}. The philosophy is to simply just frame things as
@@ -24,10 +24,16 @@ import java.util.List;
  * 
  * @author jonas@jonasborjesson.com
  */
-public final class SipMessageDecoder extends MessageToMessageDecoder<DatagramPacket> {
+public final class SipMessageDatagramDecoder extends MessageToMessageDecoder<DatagramPacket> {
 
-    public SipMessageDecoder() {
-        // left empty intentionally
+    private final Clock clock;
+
+    public SipMessageDatagramDecoder() {
+        this.clock = new SystemClock();
+    }
+
+    public SipMessageDatagramDecoder(final Clock clock) {
+        this.clock = clock;
     }
 
     /**
@@ -46,6 +52,7 @@ public final class SipMessageDecoder extends MessageToMessageDecoder<DatagramPac
     @Override
     protected void decode(final ChannelHandlerContext ctx, final DatagramPacket msg, final List<Object> out)
             throws Exception {
+        final long arrivalTime = this.clock.getCurrentTimeMillis();
         final ByteBuf content = msg.content();
         final byte[] b = new byte[content.readableBytes()];
         content.getBytes(0, b);
@@ -54,11 +61,16 @@ public final class SipMessageDecoder extends MessageToMessageDecoder<DatagramPac
 
         final SipInitialLine initialLine = SipInitialLine.parse(buffer.readLine());
         final Buffer headers = buffer.readUntilDoubleCRLF();
+        SipMessage sipMessage = null;
         if (initialLine.isRequestLine()) {
-            out.add(new SipRequestImpl(initialLine.toRequestLine(), headers, buffer));
+            sipMessage = new SipRequestImpl(initialLine.toRequestLine(), headers, buffer);
         } else {
-            out.add(new SipResponseImpl(initialLine.toResponseLine(), headers, buffer));
+            sipMessage = new SipResponseImpl(initialLine.toResponseLine(), headers, buffer);
         }
+
+        final Connection connection = new UdpConnection(ctx, msg.sender());
+        final SipMessageEvent event = new DefaultSipMessageEvent(connection, sipMessage, arrivalTime);
+        out.add(event);
     }
 
 }
