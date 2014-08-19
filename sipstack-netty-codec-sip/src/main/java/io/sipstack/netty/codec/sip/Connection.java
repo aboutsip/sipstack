@@ -116,4 +116,7 @@ public interface Connection {
      * @param msg
      */
     void send(SipMessage msg);
+
+    public boolean connect();
+
 }

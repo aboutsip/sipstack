@@ -29,4 +29,9 @@ public final class TcpConnection extends AbstractConnection {
         this.getContext().writeAndFlush(toByteBuf(msg));
     }
 
+    @Override
+    public boolean connect() {
+        return true;
+    }
+
 }

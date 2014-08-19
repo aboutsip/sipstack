@@ -13,6 +13,8 @@ package io.sipstack.netty.codec.sip;
  */
 public final class MaxMessageSizeExceededException extends Exception {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * @param message
      */

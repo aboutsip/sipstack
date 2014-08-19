@@ -3,6 +3,7 @@
  */
 package io.sipstack.example.netty.uas;
 
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.pkts.packet.sip.SipMessage;
@@ -10,9 +11,12 @@ import io.pkts.packet.sip.SipResponse;
 import io.sipstack.netty.codec.sip.SipMessageEvent;
 
 /**
+ * A super simple UAS implementation.
+ * 
  * @author jonas@jonasborjesson.com
  */
-public final class SipHandler extends SimpleChannelInboundHandler<SipMessageEvent> {
+@Sharable
+public final class UASHandler extends SimpleChannelInboundHandler<SipMessageEvent> {
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final SipMessageEvent event) throws Exception {

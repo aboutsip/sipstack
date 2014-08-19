@@ -292,7 +292,7 @@ if __name__ == '__main__':
     # process_sipp_stats('uac_2656_.csv')
     # exit(0)
 
-    sip_server = SipServer(10643)
+    sip_server = SipServer(18536)
     sipp = SIPp(attach=True)
 
     tc = TraficController(sipp, sip_server)
