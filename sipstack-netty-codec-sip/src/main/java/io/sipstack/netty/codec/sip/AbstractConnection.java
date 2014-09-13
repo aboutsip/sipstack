@@ -4,6 +4,7 @@
 package io.sipstack.netty.codec.sip;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.pkts.buffer.Buffer;
 import io.pkts.packet.sip.SipMessage;
@@ -19,12 +20,23 @@ import java.net.SocketAddress;
  */
 public abstract class AbstractConnection implements Connection {
 
-    private final ChannelHandlerContext ctx;
+    // private final ChannelHandlerContext ctx;
+    private final Channel channel;
     private final InetSocketAddress remote;
 
-    protected AbstractConnection(final ChannelHandlerContext ctx, final InetSocketAddress remote) {
-        this.ctx = ctx;
+    /*
+     * protected AbstractConnection(final ChannelHandlerContext ctx, final InetSocketAddress remote)
+     * { this.ctx = ctx; this.channel = null; this.remote = remote; }
+     */
+
+    protected AbstractConnection(final Channel channel, final InetSocketAddress remote) {
+        // this.ctx = null;
+        this.channel = channel;
         this.remote = remote;
+    }
+
+    protected Channel channel() {
+        return this.channel;
     }
 
     @Override
@@ -34,14 +46,14 @@ public abstract class AbstractConnection implements Connection {
 
     @Override
     public byte[] getRawLocalIpAddress() {
-        final SocketAddress local = this.ctx.channel().localAddress();
+        final SocketAddress local = this.channel.localAddress();
         final InetAddress address = ((InetSocketAddress) local).getAddress();
         return address.getAddress();
     }
 
     @Override
     public final String getLocalIpAddress() {
-        final SocketAddress local = this.ctx.channel().localAddress();
+        final SocketAddress local = this.channel.localAddress();
         return ((InetSocketAddress) local).getAddress().getHostAddress();
     }
 
@@ -57,7 +69,7 @@ public abstract class AbstractConnection implements Connection {
 
     @Override
     public int getLocalPort() {
-        final SocketAddress local = this.ctx.channel().localAddress();
+        final SocketAddress local = this.channel.localAddress();
         return ((InetSocketAddress) local).getPort();
     }
 
@@ -92,9 +104,9 @@ public abstract class AbstractConnection implements Connection {
         return false;
     }
 
-    protected ChannelHandlerContext getContext() {
-        return this.ctx;
-    }
+    // protected ChannelHandlerContext getContext() {
+    // return this.ctx;
+    // }
 
     /**
      * All {@link Connection}s needs to convert the msg to a {@link ByteBuf}
@@ -108,7 +120,7 @@ public abstract class AbstractConnection implements Connection {
         try {
             final Buffer b = msg.toBuffer();
             final int capacity = b.capacity() + 2;
-            final ByteBuf buffer = this.getContext().alloc().buffer(capacity, capacity);
+            final ByteBuf buffer = this.channel.alloc().buffer(capacity, capacity);
 
             for (int i = 0; i < b.getReadableBytes(); ++i) {
                 buffer.writeByte(b.getByte(i));

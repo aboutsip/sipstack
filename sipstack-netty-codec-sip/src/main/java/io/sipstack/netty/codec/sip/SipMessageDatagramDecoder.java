@@ -7,10 +7,7 @@ import io.netty.handler.codec.MessageToMessageDecoder;
 import io.pkts.buffer.Buffer;
 import io.pkts.buffer.Buffers;
 import io.pkts.packet.sip.SipMessage;
-import io.pkts.packet.sip.impl.SipInitialLine;
 import io.pkts.packet.sip.impl.SipParser;
-import io.pkts.packet.sip.impl.SipRequestImpl;
-import io.pkts.packet.sip.impl.SipResponseImpl;
 
 import java.util.List;
 
@@ -56,19 +53,22 @@ public final class SipMessageDatagramDecoder extends MessageToMessageDecoder<Dat
         final ByteBuf content = msg.content();
         final byte[] b = new byte[content.readableBytes()];
         content.getBytes(0, b);
+
         final Buffer buffer = Buffers.wrap(b);
         SipParser.consumeSWS(buffer);
+        final SipMessage sipMessage = SipParser.frame(buffer);
+        // System.err.println("CSeq header: " + sipMessage.getCSeqHeader());
 
-        final SipInitialLine initialLine = SipInitialLine.parse(buffer.readLine());
-        final Buffer headers = buffer.readUntilDoubleCRLF();
-        SipMessage sipMessage = null;
-        if (initialLine.isRequestLine()) {
-            sipMessage = new SipRequestImpl(initialLine.toRequestLine(), headers, buffer);
-        } else {
-            sipMessage = new SipResponseImpl(initialLine.toResponseLine(), headers, buffer);
-        }
+        // final SipInitialLine initialLine = SipInitialLine.parse(buffer.readLine());
+        // final Buffer headers = buffer.readUntilDoubleCRLF();
+        // SipMessage sipMessage = null;
+        // if (initialLine.isRequestLine()) {
+        // sipMessage = new SipRequestImpl(initialLine.toRequestLine(), headers, buffer);
+        // } else {
+        // sipMessage = new SipResponseImpl(initialLine.toResponseLine(), headers, buffer);
+        // }
 
-        final Connection connection = new UdpConnection(ctx, msg.sender());
+        final Connection connection = new UdpConnection(ctx.channel(), msg.sender());
         final SipMessageEvent event = new DefaultSipMessageEvent(connection, sipMessage, arrivalTime);
         out.add(event);
     }

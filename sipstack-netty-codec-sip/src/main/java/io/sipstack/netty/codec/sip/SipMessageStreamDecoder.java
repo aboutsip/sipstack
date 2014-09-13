@@ -4,6 +4,7 @@
 package io.sipstack.netty.codec.sip;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.pkts.buffer.Buffer;
@@ -82,7 +83,8 @@ public class SipMessageStreamDecoder extends ByteToMessageDecoder {
         if (this.message.isComplete()) {
             final long arrivalTime = this.clock.getCurrentTimeMillis();
             final SipMessage msg = toSipMessage(this.message);
-            final Connection connection = new TcpConnection(ctx, (InetSocketAddress) ctx.channel().remoteAddress());
+            final Channel channel = ctx.channel();
+            final Connection connection = new TcpConnection(channel, (InetSocketAddress) channel.remoteAddress());
             out.add(new DefaultSipMessageEvent(connection, msg, arrivalTime));
             reset();
         }

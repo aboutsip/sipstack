@@ -5,6 +5,7 @@ package io.sipstack.example.netty.uas;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -15,9 +16,12 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.sipstack.netty.codec.sip.Connection;
 import io.sipstack.netty.codec.sip.SipMessageDatagramDecoder;
+import io.sipstack.netty.codec.sip.SipMessageEncoder2;
 import io.sipstack.netty.codec.sip.SipMessageEvent;
 import io.sipstack.netty.codec.sip.SipMessageStreamDecoder;
+import io.sipstack.netty.codec.sip.UdpConnection;
 
 import java.net.InetSocketAddress;
 
@@ -50,6 +54,8 @@ public class SimpleSipStack {
      */
     private final Bootstrap bootstrap;
 
+    private Channel udpListeningPoint = null;
+
     public SimpleSipStack(final SimpleChannelInboundHandler<SipMessageEvent> handler, final String ip, final int port) {
         this.ip = ip;
         this.port = port;
@@ -58,10 +64,15 @@ public class SimpleSipStack {
         this.serverBootstrap = createTCPListeningPoint(handler);
     }
 
+    public Connection connect(final String ip, final int port) {
+        final InetSocketAddress remoteAddress = new InetSocketAddress(ip, port);
+        return new UdpConnection(this.udpListeningPoint, remoteAddress);
+    }
+
     public void run() throws Exception {
         try {
             final InetSocketAddress socketAddress = new InetSocketAddress(this.ip, this.port);
-            this.bootstrap.bind(socketAddress).sync();
+            this.udpListeningPoint = this.bootstrap.bind(socketAddress).sync().channel();
             this.serverBootstrap.bind(socketAddress).sync().channel().closeFuture().await();
         } finally {
             this.bossGroup.shutdownGracefully();
@@ -79,6 +90,7 @@ public class SimpleSipStack {
             protected void initChannel(final DatagramChannel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast("decoder", new SipMessageDatagramDecoder());
+                pipeline.addLast("encoder", new SipMessageEncoder2());
                 pipeline.addLast("handler", handler);
             }
         });
@@ -95,6 +107,7 @@ public class SimpleSipStack {
             public void initChannel(final SocketChannel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast("decoder", new SipMessageStreamDecoder());
+                pipeline.addLast("encoder", new SipMessageEncoder2());
                 pipeline.addLast("handler", handler);
             }
         })
