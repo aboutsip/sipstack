@@ -15,6 +15,7 @@ import io.pkts.packet.sip.header.CallIdHeader;
 import io.pkts.packet.sip.header.ContactHeader;
 import io.pkts.packet.sip.header.FromHeader;
 import io.pkts.packet.sip.header.ToHeader;
+import io.pkts.packet.sip.header.ViaHeader;
 import io.sipstack.netty.codec.sip.SipMessageEvent;
 
 /**
@@ -66,12 +67,22 @@ public final class UACHandler extends SimpleChannelInboundHandler<SipMessageEven
         // path through the network.
         // TODO
 
+        // we also have to create a new Via header and as always, when creating
+        // via header we need to fill out which ip, port and transport we are
+        // coming in over. In SIP, unlike many other protocols, we can use
+        // any transport protocol and it can actually change from message
+        // to message but in this simple example we will just use the
+        // same last time so we will only have to generate a new branch id
+        final ViaHeader via = response.getViaHeader().clone();
+        via.setBranch(ViaHeader.generateBranch());
+
         // now we have all the pieces so let's put it together
         final SipRequest.Builder builder = SipRequest.ack(requestURI);
         builder.from(from);
         builder.to(to);
         builder.callId(callId);
         builder.cseq(cseq);
+        builder.via(via);
         return builder.build();
     }
 

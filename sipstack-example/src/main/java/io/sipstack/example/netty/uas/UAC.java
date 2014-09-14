@@ -8,6 +8,7 @@ import io.pkts.packet.sip.SipRequest;
 import io.pkts.packet.sip.header.FromHeader;
 import io.pkts.packet.sip.header.ViaHeader;
 import io.sipstack.netty.codec.sip.Connection;
+
 /**
  * @author jonas@jonasborjesson.com
  */
@@ -29,8 +30,9 @@ public final class UAC {
         final String host = "127.0.0.1";
         final int port = 5070;
         final Connection connection = this.stack.connect(host, port);
-        this.from.setParameter(Buffers.wrap("tag"), Buffers.wrap("asdfasdfasdlfkjasdlkfja"));
-        final ViaHeader via = ViaHeader.with().host(host).port(port).transportUDP().build();
+        this.from.setParameter(Buffers.wrap("tag"), FromHeader.generateTag());
+        final ViaHeader via =
+                ViaHeader.with().host(host).port(port).branch(ViaHeader.generateBranch()).transportUDP().build();
         final SipRequest invite = SipRequest.invite("sip:alice@example.com").from(UAC.this.from).via(via).build();
         connection.send(invite);
     }
@@ -39,6 +41,7 @@ public final class UAC {
         final String ip = "127.0.0.1";
         final int port = 5060;
         final String transport = "udp";
+
         final UACHandler handler = new UACHandler();
         final SimpleSipStack stack = new SimpleSipStack(handler, ip, port);
         final UAC uac = new UAC(stack);
