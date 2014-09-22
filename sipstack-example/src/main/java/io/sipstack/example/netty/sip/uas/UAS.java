@@ -1,7 +1,9 @@
 /**
  * 
  */
-package io.sipstack.example.netty.uas;
+package io.sipstack.example.netty.sip.uas;
+
+import io.sipstack.example.netty.sip.SimpleSipStack;
 
 /**
  * Basic mini sip stack for acting as an UAS. Run it and then use e.g. SIPp

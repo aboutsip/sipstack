@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.sipstack.example.netty.uas;
+package io.sipstack.example.netty.sip.uac;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
@@ -89,15 +89,13 @@ public final class UACHandler extends SimpleChannelInboundHandler<SipMessageEven
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final SipMessageEvent event) throws Exception {
         final SipMessage msg = event.getMessage();
-        // System.err.println("got a new message, which is : " + msg);
 
         if (msg.isInvite() && msg.isResponse()) {
             final SipResponse response = msg.toResponse();
             if (response.isRinging()) {
-                // yay, the other side is ringing?
-                // If you were to implement a actual client
-                // you would start playing your favorite
-                // ringtone.
+                // yay, the other side is ringing! If you were to implement an
+                // actual client you would start playing your favorite
+                // ring tone now.
             } else if (response.isFinal()) {
                 System.err.println("ok, final");
                 final SipRequest ack = generateAck(response);

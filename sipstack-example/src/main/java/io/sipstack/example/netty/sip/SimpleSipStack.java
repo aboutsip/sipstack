@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.sipstack.example.netty.uas;
+package io.sipstack.example.netty.sip;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
@@ -16,9 +16,10 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.pkts.buffer.Buffer;
 import io.sipstack.netty.codec.sip.Connection;
 import io.sipstack.netty.codec.sip.SipMessageDatagramDecoder;
-import io.sipstack.netty.codec.sip.SipMessageEncoder2;
+import io.sipstack.netty.codec.sip.SipMessageEncoder;
 import io.sipstack.netty.codec.sip.SipMessageEvent;
 import io.sipstack.netty.codec.sip.SipMessageStreamDecoder;
 import io.sipstack.netty.codec.sip.UdpConnection;
@@ -69,6 +70,10 @@ public class SimpleSipStack {
         return new UdpConnection(this.udpListeningPoint, remoteAddress);
     }
 
+    public Connection connect(final Buffer ip, final int port) {
+        return connect(ip.toString(), port);
+    }
+
     public void run() throws Exception {
         try {
             final InetSocketAddress socketAddress = new InetSocketAddress(this.ip, this.port);
@@ -90,7 +95,7 @@ public class SimpleSipStack {
             protected void initChannel(final DatagramChannel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast("decoder", new SipMessageDatagramDecoder());
-                pipeline.addLast("encoder", new SipMessageEncoder2());
+                pipeline.addLast("encoder", new SipMessageEncoder());
                 pipeline.addLast("handler", handler);
             }
         });
@@ -107,7 +112,7 @@ public class SimpleSipStack {
             public void initChannel(final SocketChannel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
                 pipeline.addLast("decoder", new SipMessageStreamDecoder());
-                pipeline.addLast("encoder", new SipMessageEncoder2());
+                pipeline.addLast("encoder", new SipMessageEncoder());
                 pipeline.addLast("handler", handler);
             }
         })

@@ -149,7 +149,6 @@ public final class RawMessage {
     }
 
     public void write(final byte b) throws MaxMessageSizeExceededException, IOException {
-        // System.out.print(new Character((char) b));
 
         if (this.state == State.INIT) {
             if (b == CR || isCRLF(b)) {
@@ -168,11 +167,9 @@ public final class RawMessage {
             } else {
                 this.crlf = false;
                 writeToInitialLine(b);
-                // this.line.write(b);
             }
         } else if (this.state == State.GET_HEADERS) {
             writeToHeaders(b);
-            // this.headers.write(b);
             if (doubleCRLF(b)) {
                 if (getContentLength() > 0) {
                     this.state = State.GET_PAYLOAD;
@@ -180,7 +177,6 @@ public final class RawMessage {
                     this.state = State.GET_PAYLOAD;
                     this.done = true;
                 }
-                // System.err.println("GET_PAYLOAD");
             } else if (isCRLF(b)) {
                 // ignore
             } else if (b == CR) {
@@ -192,7 +188,6 @@ public final class RawMessage {
             }
         } else if (this.state == State.IS_CONTENT_LENGTH_HEADER) {
             writeToHeaders(b);
-            // this.headers.write(b);
             if (this.contentLengthBuffer.getByte(this.contentLengthIndex++) != b) {
                 this.contentLengthIndex = 1;
                 this.state = State.GET_HEADERS;
@@ -202,7 +197,6 @@ public final class RawMessage {
             }
         } else if (this.state == State.CONSUME_COLON) {
             writeToHeaders(b);
-            // this.headers.write(b);
             if (b == SP || b == HTAB) {
                 // consume
             } else if (b == COLON) {
@@ -212,7 +206,6 @@ public final class RawMessage {
             }
         } else if (this.state == State.CONSUME_DIGIT) {
             writeToHeaders(b);
-            // this.headers.write(b);
             if (this.contentLength == -1 && (b == SP || b == HTAB)) {
                 // consume
             } else if (isDigit(b)) {
@@ -222,11 +215,9 @@ public final class RawMessage {
                 this.contentLength = this.contentLength * 10 + b - 48;
             } else {
                 setContentLength(this.contentLength);
-                // this.payload = Buffers.createBuffer(this.contentLength);
                 this.state = State.GET_HEADERS;
             }
         } else if (this.state == State.GET_PAYLOAD) {
-            // if (this.payloadCount++ < this.payload.capacity()) {
             writeToPayload(b);
             if (payloadCompleted()) {
                 this.done = true;

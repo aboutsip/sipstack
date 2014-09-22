@@ -1,12 +1,13 @@
 /**
  * 
  */
-package io.sipstack.example.netty.uas;
+package io.sipstack.example.netty.sip.uac;
 
 import io.pkts.buffer.Buffers;
 import io.pkts.packet.sip.SipRequest;
 import io.pkts.packet.sip.header.FromHeader;
 import io.pkts.packet.sip.header.ViaHeader;
+import io.sipstack.example.netty.sip.SimpleSipStack;
 import io.sipstack.netty.codec.sip.Connection;
 
 /**

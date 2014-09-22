@@ -51,6 +51,18 @@ public final class SipMessageDatagramDecoder extends MessageToMessageDecoder<Dat
             throws Exception {
         final long arrivalTime = this.clock.getCurrentTimeMillis();
         final ByteBuf content = msg.content();
+
+        // some clients are sending various types of pings even over
+        // UDP, such as linphone which is sending "jaK\n\r".
+        // According to RFC5626, the only valid ping over UDP
+        // is to use a STUN request and since such a request is
+        // at least 20 bytes we will simply ignore anything less
+        // than that. And yes, there is no way that an actual
+        // SIP message ever could be less than 20 bytes.
+        if (content.readableBytes() < 20) {
+            return;
+        }
+
         final byte[] b = new byte[content.readableBytes()];
         content.getBytes(0, b);
 

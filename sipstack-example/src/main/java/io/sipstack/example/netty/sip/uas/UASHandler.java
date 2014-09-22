@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.sipstack.example.netty.uas;
+package io.sipstack.example.netty.sip.uas;
 
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
