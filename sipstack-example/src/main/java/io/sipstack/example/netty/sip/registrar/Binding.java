@@ -5,9 +5,15 @@ package io.sipstack.example.netty.sip.registrar;
 
 import io.pkts.packet.sip.address.SipURI;
 import io.pkts.packet.sip.header.CSeqHeader;
+import io.pkts.packet.sip.header.CallIdHeader;
 
 
 /**
+ * Represents an association between the AOR and a contact address where this AOR can be reached.
+ * 
+ * Note, this is a simplified version and doesn't contain e.g. Path headers, which are crucial for a
+ * real network.
+ * 
  * @author jonas@jonasborjesson.com
  */
 public class Binding {
@@ -20,14 +26,15 @@ public class Binding {
 
     private final SipURI contact;
 
-    /**
-     * 
-     */
-    private Binding(final SipURI aor, final int expires, final CSeqHeader cseq, final SipURI contact) {
+    private final CallIdHeader callId;
+
+    private Binding(final SipURI aor, final int expires, final CSeqHeader cseq, final SipURI contact,
+            final CallIdHeader callId) {
         this.aor = aor;
         this.expires = expires;
         this.cseq = cseq;
-        this.contact = contact;
+        this.contact = contact.clone();
+        this.callId = callId;
     }
 
     public SipURI getAor() {
@@ -43,7 +50,16 @@ public class Binding {
     }
 
     public SipURI getContact() {
-        return this.contact;
+        return this.contact.clone();
+    }
+
+    public CallIdHeader getCallId() {
+        return this.callId;
+    }
+
+    @Override
+    public String toString() {
+        return this.contact.toString();
     }
 
     public static Builder with() {
@@ -60,8 +76,15 @@ public class Binding {
 
         private SipURI contact;
 
+        private CallIdHeader callId;
+
         private Builder() {
             // just to prevent instantiation
+        }
+
+        public Builder callId(final CallIdHeader callId) {
+            this.callId = callId;
+            return this;
         }
 
         public Builder aor(final SipURI aor) {
@@ -86,9 +109,9 @@ public class Binding {
 
         public Binding build() {
             // of course, we really should validate things here
-            // but since this is a basic exmaple, we will ignore
+            // but since this is a basic example, we will ignore
             // this for now
-            return new Binding(this.aor, this.expires, this.cseq, this.contact);
+            return new Binding(this.aor, this.expires, this.cseq, this.contact, this.callId);
         }
 
     }

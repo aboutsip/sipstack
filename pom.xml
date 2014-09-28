@@ -45,7 +45,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <netty.version>4.1.0.Beta3</netty.version> 
-    <pkts.version>1.0.0-SNAPSHOT</pkts.version> 
+    <pkts.version>1.0.2-SNAPSHOT</pkts.version> 
     <sl4j.version>1.7.2</sl4j.version> 
     <log4j.version>1.2.14</log4j.version> 
 

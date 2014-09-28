@@ -13,7 +13,9 @@ import io.pkts.packet.sip.header.ExpiresHeader;
 import io.sipstack.netty.codec.sip.Connection;
 import io.sipstack.netty.codec.sip.SipMessageEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,7 @@ public final class RegistrarHandler extends SimpleChannelInboundHandler<SipMessa
      * And yes, Google Guava Table is better suited but didn't want to pull in too many
      * dependences...
      */
-    private final Map<String, List<Binding>> locationStore = new HashMap<String, List<Binding>>();
+    private final Map<SipURI, List<Binding>> locationStore = new HashMap<SipURI, List<Binding>>();
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final SipMessageEvent event) throws Exception {
@@ -81,6 +83,7 @@ public final class RegistrarHandler extends SimpleChannelInboundHandler<SipMessa
 
         final Binding.Builder builder = Binding.with();
         builder.aor(aor);
+        builder.callId(request.getCallIDHeader());
         builder.expires(getExpires(request));
         builder.cseq(request.getCSeqHeader());
 
@@ -89,9 +92,17 @@ public final class RegistrarHandler extends SimpleChannelInboundHandler<SipMessa
         builder.contact(getContactURI(request));
 
         final Binding binding = builder.build();
+        final List<Binding> currentBindings = updateBindings(binding);
+        final SipResponse response = request.createResponse(200);
+        currentBindings.forEach(b -> {
+            final SipURI contactURI = b.getContact();
+            contactURI.setParameter("expires", b.getExpires());
+            response.addHeader(ContactHeader.with(contactURI).build());
+        });
 
-        return request.createResponse(200);
+        return response;
     }
+
 
     /**
      * See RFC3261 of how it is actually supposed to be done but the short version is:
@@ -104,8 +115,40 @@ public final class RegistrarHandler extends SimpleChannelInboundHandler<SipMessa
      * @return
      */
     private List<Binding> updateBindings(final Binding binding) {
+        synchronized (this.locationStore) {
+            final List<Binding> bindings = ensureLocationStore(binding.getAor());
+            final Iterator<Binding> it = bindings.iterator();
+            boolean add = true;
+            while(it.hasNext()) {
+                final Binding bind = it.next();
+                if (!bind.getContact().equals(binding.getContact())) {
+                    continue;
+                }
 
+                if (binding.getExpires() == 0) {
+                    it.remove();
+                    add = false;
+                } else if (!bind.getCallId().equals(binding.getCallId())) {
+                    it.remove();
+                } else if (binding.getCseq().getSeqNumber() > bind.getCseq().getSeqNumber()) {
+                    it.remove();
+                }
+            }
 
+            if (binding.getExpires() > 0 && add) {
+                bindings.add(binding);
+            }
+            return bindings;
+        }
+    }
+
+    private List<Binding> ensureLocationStore(final SipURI aor) {
+        List<Binding> bindings = this.locationStore.get(aor);
+        if (bindings == null) {
+            bindings = new ArrayList<>();
+            this.locationStore.put(aor, bindings);
+        }
+        return bindings;
     }
 
     private SipURI getContactURI(final SipRequest request) {
@@ -130,7 +173,7 @@ public final class RegistrarHandler extends SimpleChannelInboundHandler<SipMessa
             }
         }
 
-        final ExpiresHeader expires = (ExpiresHeader) request.getHeader(ExpiresHeader.NAME);
+        final ExpiresHeader expires = request.getExpiresHeader();
         return expires.getExpires();
     }
 
