@@ -1,0 +1,60 @@
+---
+title: Sipstack.io
+layout: default
+menu: sipstack.html
+active_element: sipstackio
+---
+
+<div class="row row-offcanvas row-offcanvas-right">
+   <div>
+      <p class="pull-right visible-xs">
+         <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p>
+
+      <div class="row col-md-9"> 
+         <!-- SIP Intro Section --> 
+         <!-- <div id="intro" class="col-9 col-sm-9 col-lg-9"> --> 
+         <div class="col-xs-12" id="intro">
+            <h1>sipstack.io</h1>
+            <p>Any SIP stack needs a fast and robust network layer and, equally important, a fast and robust library for the framing and parsing of SIP messages. <a href="http://netty.io">Netty.io</a> is exactly this and is also a library that is well adopted by a large community and has been actively developed for many years. <a href="/pktsio">Pkts.io</a> provides a robust library for framing and parsing many network protocols, including SIP and pkts.io was designed with SIP specifically in mind. Marry these two libraries and you will have a very solid base for a great SIP stack. 
+            </p>
+            <p>Sipstack.io is an initiative to write a new breed of SIP stacks and is based off of <a href="http://netty.io">netty.io</a> and <a href="/pktsio">pkts.io</a> to provide the base for the stack and currently offers a stateless stack, allowing you to build your own SIP stack with performance built in!
+            </p>
+            <p>
+            </p>
+         </div><!--/span-->
+
+         <!-- Netty Integration-->
+         <div class="col-xs-12" id="intro-netty">
+             <h3>Netty Integration</h3>
+            <p>The integration with Netty is done through a 
+               <a href="http://netty.io/4.0/api/io/netty/channel/ChannelInboundHandler.html"><code>ChannelInboundHandler</code></a> and a 
+               <a href="http://netty.io/4.0/api/io/netty/channel/ChannelOutboundHandler.html"><code>ChannelOutboundHandler</code></a> 
+               If you are familiar with Netty, this will not come as a supprise to you but 
+               if you are new to Netty you probably do not know what this means. The details 
+               of Netty will not be covered here but in general, someone must handle the 
+               incoming data over the network and that is in Netty accomplished by a 
+               ChannelInboundHandler. Similarly, when data is written to the network, the object, 
+               which in this case will be a <a href="http://static.javadoc.io/io.pkts/pkts-sip/1.0.2/io/pkts/packet/sip/SipMessage.html"><code>SipMessage</code></a>, has to be converted to a sequence of bytes that can be sent across the network, which is taken care of by a  ChannelOutboundHandler. Sipstack.io provides with a unified  ChannelOutboundHandler and two different  ChannelInboundHandler's, one for datagram oriented transports (such as UDP) and one for stream based protocols (such as TCP).
+            </p>
+            <p>
+             They are:
+             <ul>
+                  <li>Inbound UDP - <a href="https://github.com/aboutsip/sipstack/blob/master/sipstack-netty-codec-sip/src/main/java/io/sipstack/netty/codec/sip/SipMessageDatagramDecoder.java"><code>SipMessageDatagramDecoder</code></a></li>
+                  <li>Inbound TCP - <a href="https://github.com/aboutsip/sipstack/blob/master/sipstack-netty-codec-sip/src/main/java/io/sipstack/netty/codec/sip/SipMessageStreamDecoder.java"><code>SipMessageStreamDecoder</code></a></li>
+                  <li>Outbound - <a href="https://github.com/aboutsip/sipstack/blob/master/sipstack-netty-codec-sip/src/main/java/io/sipstack/netty/codec/sip/SipMessageEncoder.java"><code>SipMessageEncoder</code></a></li>
+             </ul>
+             
+            </p>
+          </div><!--/Netty Integration-->
+
+         <!-- Netty Integration-->
+         <div class="col-xs-12" id="netty-examples">
+             <h3>Examples</h3>
+             <p>
+             </p>
+          </div><!--/Netty Integration-->
+
+   </div><!--/row-->
+</div><!--/span-->
+

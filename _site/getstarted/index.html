@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Jonas Borjesson">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>sipstack.io</title>
+    <link href="/css/bootswatch/3.2.0/cerulean/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/aboutsip.css" rel="stylesheet">
+    <link href="/css/syntax.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+        var shiftWindow = function() { scrollBy(0, -50) };
+        window.addEventListener("hashchange", shiftWindow);
+        function load() { if (window.location.hash) shiftWindow(); }
+    </script>
+
+  </head>
+  <body data-spy="scroll" data-offset="90" data-target=".bs-docs-sidebar">
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".bs-docs-sidebar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">sipstack.io</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/getstarted">Get Started</a></li>
+            <li ><a href="/docs">Documentation</a></li>
+          </ul>
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+
+    <div class="container">
+
+<div class="row row-offcanvas row-offcanvas-right">
+   <div>
+      <p class="pull-right visible-xs">
+         <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p>
+
+      <div class="row col-md-9"> 
+
+         <!-- Pkts.io Intro Section --> 
+         <div class="col-xs-12">
+            <div id="intro">
+            <h1>sipstack.io</h1>
+            <p> pkts.io is a pure java library for reading and writing pcaps. It's primary 
+                purpose is to manipulate/analyze existing pcaps, allowing you to build various 
+                tools around pcaps.
+            </p>
+            </div>
+         </div>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="intro-consume-it">
+            <h3>Consume It</h3>
+            <p>sipstack.io is available through Maven Central so just include the following Maven artifact and you are good to go:
+            </p>
+            <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>io.sipstack<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>sipstack-core<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>1.0.2<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;type&gt;</span>jar<span class="nt">&lt;/type&gt;</span>
+  <span class="nt">&lt;/dependency&gt;</span></code></pre></div>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="intro-javadoc">
+            <h3>Javadoc</h3>
+            <p>Javadocs for all releases are hosted by our friends at <a href="www.javadoc.io">javadoc.io</a> and the current release of pkts.io is accessed through the following links:
+               <ul>
+                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-buffers/"><code>Buffers</code></a></li>
+                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-core/"><code>Core</code></a></li>
+                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-sip/"><code>SIP</code></a></li>
+                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-streams/"><code>Streams</code></a></li>
+               </ul>
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="examples">
+            <h1>Examples</h1>
+            <p>The pkts-examples contains a bunch of different examples showing the various features of the raw frame handling as well as the higher abstraction of streams. Please see the pkts.io example repository on <a href="https://github.com/aboutsip/pkts/tree/master/pkts-examples/src/main/java/io/pkts/examples">github.com/aboutsip/pkts</a> for the examples.
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing">
+            <h1>Contributing</h1>
+            <p> Contributions are more than welcome and highly encouraged. Everything in pkts.io are following the general guidelines of Maven so if you are familiar with Maven you should have no problem getting started.
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing-build-it">
+            <h3>Build it</h3>
+            <p> 
+               <ol>
+                   <li>Clone it</li>
+                   <li>mvn install</li>
+                   <li>done</li>
+               </ol>
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing-ide">
+            <h3>IDE</h3>
+            <p> Most Java IDE:s are capable of importing Maven based projects, allowing for a smooth integration with the IDE and Maven. Remember, Maven is the source of truth so please do not check in any IDE specific files (such as .project and .classpath for Eclipse).
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing-start-coding">
+            <h3>Start Coding</h3>
+            <p> So, you have succerssfully loaded all the code so what is the next steps. Well, check out the readme files under each sub-project to get a description of what that module is supposed to do and how to get started with the project. If you want to contribute to any project, please read the section about contribution, specifially, please checkout the section about coding principles and the style guide.
+           </p>
+           <p> If you have ideas of your own, please file a ticket so when you do submit a pull request, we know what the intent of this feature is, this also gives us a way of communicating about features.
+           </p>
+           <p> If you just want to get your hands dirty then feel free to check out the open issues. If there is anything you would like to start tackling, just assign the task to yourself and get cranking.
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing-code-principals">
+            <h3>Code Principals</h3>
+            <p> At aboutsip, we try to follow these general principles and by adhering to these simple guidelines, we feel that our code is more readable, easier to follow and is testable (even though we can always do better so please give us constructive feedback):
+            <ul>
+                <li>Write code so others can read and understand it.</li>
+                <li>Write testable code.</li>
+                <li>Unit tests everything, but no need to strive for 100%.</li>
+                <li>A method should not be longer than a page (if it is, you probably can split it up).</li>
+                <li>Javadoc everything! Please describe what each class/interface is supposed to do. If you cannot explain it, then no one else will be able to understand it either. Each method should be documented. Describe what the method is supposed to do. If you end up writing an essay about the method, perhaps it is too complicated?</li>
+            </ul>
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="contributing-style-guide">
+            <h3>Style Guide</h3>
+            <p> Please follow the style already in place. If you are an Eclipse user, follow the guidelines for Eclipse below and please load the formatting template and then you won't even have to think about it, Eclipse will do it for you.
+            </p>
+            <p>In general, the aboutsip code base is following regular java style convention but here are the more important points (and some differences)
+            <ul>
+                <li>No tabs – ever</li>
+                <li>Indent is 4 spaces</li>
+                <li>The line width is 120 characters so please do not cut it off at 80 (we all have screens with high enough resolution these days).</li>
+                <li>Use final everywhere! (once again, you can have Eclipse fix this for you).</li>
+                <li>Use this everywhere! (Eclipse will fix it for you)</li>
+            </ul>
+            </p>
+         </div><!--/span-->
+
+         <div class="col-xs-12" id="license">
+            <h1>License</h1>
+            <p>pkts.io and all projects under aboutsip.com are released under the terms of the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>
+            </p>
+         </div><!--/span-->
+
+   </div><!--/row-->
+</div><!--/span-->
+
+
+
+
+   <div class="col-md-3">
+   <div class="hidden-print hidden-xs hidden-sm affix" role="complementary">
+    <div class="bs-docs-sidebar">
+      <ul class="nav">
+         <li >
+              <a href="#intro">Intro</a>
+              <ul class="nav">
+                  <li><a href="#intro-load-pcap">Load a pcap</a></li>
+                  <li><a href="#intro-streams">Using Streams</a></li>
+                  <li><a href="#intro-consume-it">Consume It</a></li>
+                  <li><a href="#intro-javadoc">Javadoc</a></li>
+              </ul>
+         </li>
+         <li >
+              <a href="#examples">Examples</a>
+         </li>
+         <li >
+              <a href="#contributing">Contributing</a>
+              <ul class="nav">
+                  <li><a href="#contributing-build-it">Build It</a></li>
+                  <li><a href="#contributing-ide">Using an IDE</a></li>
+                  <li><a href="#contributing-start-coding">Start Coding</a></li>
+                  <li><a href="#contributing-code-principals">Code Principals</a></li>
+                  <li><a href="#contributing-style-guide">Style Guide</a></li>
+              </ul>
+         </li>
+         <li >
+              <a href="#license">License</a>
+         </li>
+      </ul>
+   </div>
+   </div>
+</div>
+
+
+
+    </div><!--/.container-->
+    <hr>
+   <div class="footer">
+      <div class="container">
+        <p class="text-muted">© 2014 aboutsip.com</p>
+      </div>
+    </div>
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery-1.11.1.min.js"></script> 
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+<!--
+    <script src="/js/offcanvas.js"></script>
+-->
+  </body>
+</html>
+
+

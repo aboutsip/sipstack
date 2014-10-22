@@ -1,0 +1,7 @@
+{% include header.html %}
+{{ content }}
+
+{% if page.menu != null %}
+   {% include {{page.menu}} %}
+{%endif%}
+{% include footer.html %}
