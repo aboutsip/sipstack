@@ -13,13 +13,6 @@ import java.net.InetSocketAddress;
  */
 public final class TcpConnection extends AbstractConnection {
 
-    /**
-     * @param ctx
-     * @param remote
-     */
-    // public TcpConnection(final ChannelHandlerContext ctx, final InetSocketAddress remote) {
-    // super(ctx, remote);
-    // }
 
     public TcpConnection(final Channel channel, final InetSocketAddress remote) {
         super(channel, remote);

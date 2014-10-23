@@ -42,11 +42,6 @@ public final class UdpConnection extends AbstractConnection {
     @Override
     public boolean connect() {
         return true;
-        /*
-         * final ChannelFuture future = this.getContext().channel().connect(getRemoteAddress()); try
-         * { future.sync(); System.out.println("Connection was successful: " + future.isSuccess());
-         * } catch (final InterruptedException e) { e.printStackTrace(); } return true;
-         */
     }
 
 }
