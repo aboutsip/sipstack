@@ -1,0 +1,41 @@
+{% highlight java linenos %}
+@Sharable
+public final class UAS extends SimpleChannelInboundHandler<SipMessageEvent> {
+
+    @Override
+    protected void channelRead0(final ChannelHandlerContext ctx, final SipMessageEvent event) 
+                               throws Exception {
+        final SipMessage msg = event.getMessage();
+
+        if (msg.isAck()) {
+            return;
+        }
+
+        if (msg.isRequest()) {
+            final SipResponse response = msg.createResponse(200);
+            event.getConnection().send(response);
+        }
+    }
+
+    public static void main(final String[] args) throws Exception {
+        final UAS uas = new UAS();
+        final EventLoopGroup udpGroup = new NioEventLoopGroup();
+
+        final Bootstrap b = new Bootstrap();
+        b.group(udpGroup)
+        .channel(NioDatagramChannel.class)
+        .handler(new ChannelInitializer<DatagramChannel>() {
+            @Override
+            protected void initChannel(final DatagramChannel ch) throws Exception {
+                final ChannelPipeline pipeline = ch.pipeline();
+                pipeline.addLast("decoder", new SipMessageDatagramDecoder());
+                pipeline.addLast("encoder", new SipMessageEncoder());
+                pipeline.addLast("handler", uas);
+            }
+        });
+
+        final InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", 5060);
+        b.bind(socketAddress).sync().channel().closeFuture().await();
+    }
+}
+{% endhighlight %}

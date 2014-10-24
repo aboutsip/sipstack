@@ -11,25 +11,21 @@ layout: default
       <div class="jumbotron">
          <h1>Sipstack.io</h1>
          <h2>production ready out of the box!</h2>
-         <p>Sipstack.io is an initiative to write a new breed of JVM based SIP stacks that is ops-friendly and high-performing out-of-the-box. It comes with sophisticated configuration, application metrics and operational tools, allowing you and your team to build a production ready SIP service in the shortest amount of time possible. 
-         </p>
-<p>
-   <a href="/getstarted" class="btn btn-primary" role="button">Get Started »</a>
-   <a href="/docs" class="btn btn-primary" role="button">User Documentation »</a>
 </p>
 
       </div>
-      <div class="row">
-
-         <!-- SIP Intro Section -->
          <div class="col-xs-12">
-            <h2>The Base</h2>
-            <p>Any SIP stack needs a fast and robust network layer and, equally important, a fast and robust library for the framing and parsing of SIP messages. <a href="http://netty.io">Netty.io</a> is exactly this and is also a library that is well adopted by a large community and has been actively developed for many years. <a href="/pktsio">Pkts.io</a> provides a robust library for framing and parsing many network protocols, including SIP and pkts.io was designed with SIP specifically in mind. Combine these two libraries and you will have a very solid base for a great SIP stack. 
+            <div id="intro">
+            <p> Sipstack.io provides a fast and reliable SIP framework whose primary purpose is to provide developers with a stack that is lightweight, ops-friendly and optimized for production deployment out-of-the-box. It comes with sophisticated configuration, application metrics and operational tools, allowing you and your team to build a production ready SIP service in the shortest amount of time possible. <a href="http://netty.io">Netty.io</a> is providing the raw network stack and  <a href="http://www.aboutsip.com/pktsio">pkts.io</a> is the library used for framing and parsing of SIP messages. Currently, it has support for building stateless stacks.
             </p>
-            <p>Sipstack.io is an initiative to write a new breed of SIP stacks and is based off of <a href="http://netty.io">netty.io</a> and <a href="/pktsio">pkts.io</a> to provide the base for the stack and currently offers a stateless stack, allowing you to build your own SIP stack with performance built in!
+            <p>The following example shows how to build a very basic UAS, capable of handling several thousands of calls per second.
             </p>
+            <p>
+                  {% include basicuas.html %}
+            </p>
+            </div>
+         </div>
          </div><!--/span-->
-
    </div><!--/row-->
 </div><!--/span-->
 

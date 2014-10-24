@@ -18,9 +18,12 @@ sipstackio_version: 1.0.2
          <div class="col-xs-12">
             <div id="intro">
             <h1>sipstack.io</h1>
-            <p> pkts.io is a pure java library for reading and writing pcaps. It's primary 
-                purpose is to manipulate/analyze existing pcaps, allowing you to build various 
-                tools around pcaps.
+            <p>Sipstack.io provides a fast and reliable SIP framework whose primary purpose is to provide developers with a stack that is lightweight and optimized for production deployment out-of-the-box. It is using <a href="http://netty.io">netty.io</a> as the underlying network stack and <a href="http://www.aboutsip.com/pktsio">pkts.io</a> is the library used for framing and parsing of SIP messages. Currently, it has support for building stateless stacks.
+            </p>
+            <p>The following example shows how to build a very basic UAS, capable of handling several thousands of calls per second.
+            </p>
+            <p>
+                  {% include basicuas.html %}
             </p>
             </div>
          </div>
@@ -30,14 +33,6 @@ sipstackio_version: 1.0.2
             <h3>Consume It</h3>
             <p>sipstack.io is available through Maven Central so just include the following Maven artifact and you are good to go:
             </p>
-            {% highlight xml %}
-<dependency>
-      <groupId>io.sipstack</groupId>
-      <artifactId>sipstack-core</artifactId>
-      <version>{{ page.sipstackio_version }}</version>
-      <type>jar</type>
-  </dependency>
-            {% endhighlight %}
          </div><!--/span-->
 
          <div class="col-xs-12" id="intro-javadoc">

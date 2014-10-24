@@ -8,7 +8,7 @@
     <meta name="author" content="Jonas Borjesson">
     <link rel="icon" href="/favicon.ico">
 
-    <title>Aboutsip.com</title>
+    <title>sipstack.io</title>
     <link href="/css/bootswatch/3.2.0/cerulean/bootstrap.min.css" rel="stylesheet">
     <link href="/css/aboutsip.css" rel="stylesheet">
     <link href="/css/syntax.css" rel="stylesheet">
@@ -26,6 +26,7 @@
 
   </head>
   <body data-spy="scroll" data-offset="90" data-target=".bs-docs-sidebar">
+
     <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -56,25 +57,60 @@
       <div class="jumbotron">
          <h1>Sipstack.io</h1>
          <h2>production ready out of the box!</h2>
-         <p>Sipstack.io is an initiative to write a new breed of JVM based SIP stacks that is ops-friendly and high-performing out-of-the-box. It comes with sophisticated configuration, application metrics and operational tools, allowing you and your team to build a production ready SIP service in the shortest amount of time possible. 
-         </p>
-<p>
-   <a href="/getstarted" class="btn btn-primary" role="button">Get Started »</a>
-   <a href="/docs" class="btn btn-primary" role="button">User Documentation »</a>
 </p>
 
       </div>
-      <div class="row">
-
-         <!-- SIP Intro Section -->
          <div class="col-xs-12">
-            <h2>The Base</h2>
-            <p>Any SIP stack needs a fast and robust network layer and, equally important, a fast and robust library for the framing and parsing of SIP messages. <a href="http://netty.io">Netty.io</a> is exactly this and is also a library that is well adopted by a large community and has been actively developed for many years. <a href="/pktsio">Pkts.io</a> provides a robust library for framing and parsing many network protocols, including SIP and pkts.io was designed with SIP specifically in mind. Combine these two libraries and you will have a very solid base for a great SIP stack. 
+            <div id="intro">
+            <p> Sipstack.io provides a fast and reliable SIP framework whose primary purpose is to provide developers with a stack that is lightweight, ops-friendly and optimized for production deployment out-of-the-box. It comes with sophisticated configuration, application metrics and operational tools, allowing you and your team to build a production ready SIP service in the shortest amount of time possible. <a href="http://netty.io">Netty.io</a> is providing the raw network stack and  <a href="http://www.aboutsip.com/pktsio">pkts.io</a> is the library used for framing and parsing of SIP messages. Currently, it has support for building stateless stacks.
             </p>
-            <p>Sipstack.io is an initiative to write a new breed of SIP stacks and is based off of <a href="http://netty.io">netty.io</a> and <a href="/pktsio">pkts.io</a> to provide the base for the stack and currently offers a stateless stack, allowing you to build your own SIP stack with performance built in!
+            <p>The following example shows how to build a very basic UAS, capable of handling several thousands of calls per second.
             </p>
-         </div><!--/span-->
+            <p>
+                  <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Sharable</span>
+<span class="lineno"> 2</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">UAS</span> <span class="kd">extends</span> <span class="n">SimpleChannelInboundHandler</span><span class="o">&lt;</span><span class="n">SipMessageEvent</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="lineno"> 3</span> 
+<span class="lineno"> 4</span>     <span class="nd">@Override</span>
+<span class="lineno"> 5</span>     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">channelRead0</span><span class="o">(</span><span class="kd">final</span> <span class="n">ChannelHandlerContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="kd">final</span> <span class="n">SipMessageEvent</span> <span class="n">event</span><span class="o">)</span> 
+<span class="lineno"> 6</span>                                <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<span class="lineno"> 7</span>         <span class="kd">final</span> <span class="n">SipMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getMessage</span><span class="o">();</span>
+<span class="lineno"> 8</span> 
+<span class="lineno"> 9</span>         <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">isAck</span><span class="o">())</span> <span class="o">{</span>
+<span class="lineno">10</span>             <span class="k">return</span><span class="o">;</span>
+<span class="lineno">11</span>         <span class="o">}</span>
+<span class="lineno">12</span> 
+<span class="lineno">13</span>         <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">isRequest</span><span class="o">())</span> <span class="o">{</span>
+<span class="lineno">14</span>             <span class="kd">final</span> <span class="n">SipResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="na">createResponse</span><span class="o">(</span><span class="mi">200</span><span class="o">);</span>
+<span class="lineno">15</span>             <span class="n">event</span><span class="o">.</span><span class="na">getConnection</span><span class="o">().</span><span class="na">send</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
+<span class="lineno">16</span>         <span class="o">}</span>
+<span class="lineno">17</span>     <span class="o">}</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span>     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<span class="lineno">20</span>         <span class="kd">final</span> <span class="n">UAS</span> <span class="n">uas</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UAS</span><span class="o">();</span>
+<span class="lineno">21</span>         <span class="kd">final</span> <span class="n">EventLoopGroup</span> <span class="n">udpGroup</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">NioEventLoopGroup</span><span class="o">();</span>
+<span class="lineno">22</span> 
+<span class="lineno">23</span>         <span class="kd">final</span> <span class="n">Bootstrap</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Bootstrap</span><span class="o">();</span>
+<span class="lineno">24</span>         <span class="n">b</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="n">udpGroup</span><span class="o">)</span>
+<span class="lineno">25</span>         <span class="o">.</span><span class="na">channel</span><span class="o">(</span><span class="n">NioDatagramChannel</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="lineno">26</span>         <span class="o">.</span><span class="na">handler</span><span class="o">(</span><span class="k">new</span> <span class="n">ChannelInitializer</span><span class="o">&lt;</span><span class="n">DatagramChannel</span><span class="o">&gt;()</span> <span class="o">{</span>
+<span class="lineno">27</span>             <span class="nd">@Override</span>
+<span class="lineno">28</span>             <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">initChannel</span><span class="o">(</span><span class="kd">final</span> <span class="n">DatagramChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+<span class="lineno">29</span>                 <span class="kd">final</span> <span class="n">ChannelPipeline</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">ch</span><span class="o">.</span><span class="na">pipeline</span><span class="o">();</span>
+<span class="lineno">30</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;decoder&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="nf">SipMessageDatagramDecoder</span><span class="o">());</span>
+<span class="lineno">31</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;encoder&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="nf">SipMessageEncoder</span><span class="o">());</span>
+<span class="lineno">32</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;handler&quot;</span><span class="o">,</span> <span class="n">uas</span><span class="o">);</span>
+<span class="lineno">33</span>             <span class="o">}</span>
+<span class="lineno">34</span>         <span class="o">});</span>
+<span class="lineno">35</span> 
+<span class="lineno">36</span>         <span class="kd">final</span> <span class="n">InetSocketAddress</span> <span class="n">socketAddress</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">InetSocketAddress</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span> <span class="mi">5060</span><span class="o">);</span>
+<span class="lineno">37</span>         <span class="n">b</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="n">socketAddress</span><span class="o">).</span><span class="na">sync</span><span class="o">().</span><span class="na">channel</span><span class="o">().</span><span class="na">closeFuture</span><span class="o">().</span><span class="na">await</span><span class="o">();</span>
+<span class="lineno">38</span>     <span class="o">}</span>
+<span class="lineno">39</span> <span class="o">}</span></code></pre></div>
 
+            </p>
+            </div>
+         </div>
+         </div><!--/span-->
    </div><!--/row-->
 </div><!--/span-->
 
@@ -85,7 +121,7 @@
     <hr>
    <div class="footer">
       <div class="container">
-        <p class="text-muted">© 2014 aboutsip.com</p>
+        <p class="text-muted">© 2013-2014 Jonas Borjesson, aboutsip.com and sipstack.io</p>
       </div>
     </div>
 
