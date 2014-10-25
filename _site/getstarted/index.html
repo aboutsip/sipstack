@@ -49,166 +49,22 @@
 
     <div class="container">
 
+
 <div class="row row-offcanvas row-offcanvas-right">
-   <div>
-      <p class="pull-right visible-xs">
-         <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
-      </p>
-
-      <div class="row col-md-9"> 
-
-         <!-- Pkts.io Intro Section --> 
-         <div class="col-xs-12">
-            <div id="intro">
-            <h1>sipstack.io</h1>
-            <p>Sipstack.io provides a fast and reliable SIP framework whose primary purpose is to provide developers with a stack that is lightweight and optimized for production deployment out-of-the-box. It is using <a href="http://netty.io">netty.io</a> as the underlying network stack and <a href="http://www.aboutsip.com/pktsio">pkts.io</a> is the library used for framing and parsing of SIP messages. Currently, it has support for building stateless stacks.
-            </p>
-            <p>The following example shows how to build a very basic UAS, capable of handling several thousands of calls per second.
-            </p>
-            <p>
-                  <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="lineno"> 1</span> <span class="nd">@Sharable</span>
-<span class="lineno"> 2</span> <span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">UAS</span> <span class="kd">extends</span> <span class="n">SimpleChannelInboundHandler</span><span class="o">&lt;</span><span class="n">SipMessageEvent</span><span class="o">&gt;</span> <span class="o">{</span>
-<span class="lineno"> 3</span> 
-<span class="lineno"> 4</span>     <span class="nd">@Override</span>
-<span class="lineno"> 5</span>     <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">channelRead0</span><span class="o">(</span><span class="kd">final</span> <span class="n">ChannelHandlerContext</span> <span class="n">ctx</span><span class="o">,</span> <span class="kd">final</span> <span class="n">SipMessageEvent</span> <span class="n">event</span><span class="o">)</span> 
-<span class="lineno"> 6</span>                                <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-<span class="lineno"> 7</span>         <span class="kd">final</span> <span class="n">SipMessage</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getMessage</span><span class="o">();</span>
-<span class="lineno"> 8</span> 
-<span class="lineno"> 9</span>         <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">isAck</span><span class="o">())</span> <span class="o">{</span>
-<span class="lineno">10</span>             <span class="k">return</span><span class="o">;</span>
-<span class="lineno">11</span>         <span class="o">}</span>
-<span class="lineno">12</span> 
-<span class="lineno">13</span>         <span class="k">if</span> <span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">isRequest</span><span class="o">())</span> <span class="o">{</span>
-<span class="lineno">14</span>             <span class="kd">final</span> <span class="n">SipResponse</span> <span class="n">response</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="na">createResponse</span><span class="o">(</span><span class="mi">200</span><span class="o">);</span>
-<span class="lineno">15</span>             <span class="n">event</span><span class="o">.</span><span class="na">getConnection</span><span class="o">().</span><span class="na">send</span><span class="o">(</span><span class="n">response</span><span class="o">);</span>
-<span class="lineno">16</span>         <span class="o">}</span>
-<span class="lineno">17</span>     <span class="o">}</span>
-<span class="lineno">18</span> 
-<span class="lineno">19</span>     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-<span class="lineno">20</span>         <span class="kd">final</span> <span class="n">UAS</span> <span class="n">uas</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">UAS</span><span class="o">();</span>
-<span class="lineno">21</span>         <span class="kd">final</span> <span class="n">EventLoopGroup</span> <span class="n">udpGroup</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">NioEventLoopGroup</span><span class="o">();</span>
-<span class="lineno">22</span> 
-<span class="lineno">23</span>         <span class="kd">final</span> <span class="n">Bootstrap</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Bootstrap</span><span class="o">();</span>
-<span class="lineno">24</span>         <span class="n">b</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="n">udpGroup</span><span class="o">)</span>
-<span class="lineno">25</span>         <span class="o">.</span><span class="na">channel</span><span class="o">(</span><span class="n">NioDatagramChannel</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="lineno">26</span>         <span class="o">.</span><span class="na">handler</span><span class="o">(</span><span class="k">new</span> <span class="n">ChannelInitializer</span><span class="o">&lt;</span><span class="n">DatagramChannel</span><span class="o">&gt;()</span> <span class="o">{</span>
-<span class="lineno">27</span>             <span class="nd">@Override</span>
-<span class="lineno">28</span>             <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">initChannel</span><span class="o">(</span><span class="kd">final</span> <span class="n">DatagramChannel</span> <span class="n">ch</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-<span class="lineno">29</span>                 <span class="kd">final</span> <span class="n">ChannelPipeline</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">ch</span><span class="o">.</span><span class="na">pipeline</span><span class="o">();</span>
-<span class="lineno">30</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;decoder&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="nf">SipMessageDatagramDecoder</span><span class="o">());</span>
-<span class="lineno">31</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;encoder&quot;</span><span class="o">,</span> <span class="k">new</span> <span class="nf">SipMessageEncoder</span><span class="o">());</span>
-<span class="lineno">32</span>                 <span class="n">pipeline</span><span class="o">.</span><span class="na">addLast</span><span class="o">(</span><span class="s">&quot;handler&quot;</span><span class="o">,</span> <span class="n">uas</span><span class="o">);</span>
-<span class="lineno">33</span>             <span class="o">}</span>
-<span class="lineno">34</span>         <span class="o">});</span>
-<span class="lineno">35</span> 
-<span class="lineno">36</span>         <span class="kd">final</span> <span class="n">InetSocketAddress</span> <span class="n">socketAddress</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">InetSocketAddress</span><span class="o">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="o">,</span> <span class="mi">5060</span><span class="o">);</span>
-<span class="lineno">37</span>         <span class="n">b</span><span class="o">.</span><span class="na">bind</span><span class="o">(</span><span class="n">socketAddress</span><span class="o">).</span><span class="na">sync</span><span class="o">().</span><span class="na">channel</span><span class="o">().</span><span class="na">closeFuture</span><span class="o">().</span><span class="na">await</span><span class="o">();</span>
-<span class="lineno">38</span>     <span class="o">}</span>
-<span class="lineno">39</span> <span class="o">}</span></code></pre></div>
-
-            </p>
-            </div>
-         </div>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="intro-consume-it">
-            <h3>Consume It</h3>
-            <p>sipstack.io is available through Maven Central so just include the following Maven artifact and you are good to go:
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="intro-javadoc">
-            <h3>Javadoc</h3>
-            <p>Javadocs for all releases are hosted by our friends at <a href="www.javadoc.io">javadoc.io</a> and the current release of pkts.io is accessed through the following links:
-               <ul>
-                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-buffers/"><code>Buffers</code></a></li>
-                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-core/"><code>Core</code></a></li>
-                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-sip/"><code>SIP</code></a></li>
-                    <li><a href="http://www.javadoc.io/doc/io.pkts/pkts-streams/"><code>Streams</code></a></li>
-               </ul>
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="examples">
-            <h1>Examples</h1>
-            <p>The pkts-examples contains a bunch of different examples showing the various features of the raw frame handling as well as the higher abstraction of streams. Please see the pkts.io example repository on <a href="https://github.com/aboutsip/pkts/tree/master/pkts-examples/src/main/java/io/pkts/examples">github.com/aboutsip/pkts</a> for the examples.
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing">
-            <h1>Contributing</h1>
-            <p> Contributions are more than welcome and highly encouraged. Everything in pkts.io are following the general guidelines of Maven so if you are familiar with Maven you should have no problem getting started.
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing-build-it">
-            <h3>Build it</h3>
-            <p> 
-               <ol>
-                   <li>Clone it</li>
-                   <li>mvn install</li>
-                   <li>done</li>
-               </ol>
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing-ide">
-            <h3>IDE</h3>
-            <p> Most Java IDE:s are capable of importing Maven based projects, allowing for a smooth integration with the IDE and Maven. Remember, Maven is the source of truth so please do not check in any IDE specific files (such as .project and .classpath for Eclipse).
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing-start-coding">
-            <h3>Start Coding</h3>
-            <p> So, you have succerssfully loaded all the code so what is the next steps. Well, check out the readme files under each sub-project to get a description of what that module is supposed to do and how to get started with the project. If you want to contribute to any project, please read the section about contribution, specifially, please checkout the section about coding principles and the style guide.
-           </p>
-           <p> If you have ideas of your own, please file a ticket so when you do submit a pull request, we know what the intent of this feature is, this also gives us a way of communicating about features.
-           </p>
-           <p> If you just want to get your hands dirty then feel free to check out the open issues. If there is anything you would like to start tackling, just assign the task to yourself and get cranking.
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing-code-principals">
-            <h3>Code Principals</h3>
-            <p> At aboutsip, we try to follow these general principles and by adhering to these simple guidelines, we feel that our code is more readable, easier to follow and is testable (even though we can always do better so please give us constructive feedback):
-            <ul>
-                <li>Write code so others can read and understand it.</li>
-                <li>Write testable code.</li>
-                <li>Unit tests everything, but no need to strive for 100%.</li>
-                <li>A method should not be longer than a page (if it is, you probably can split it up).</li>
-                <li>Javadoc everything! Please describe what each class/interface is supposed to do. If you cannot explain it, then no one else will be able to understand it either. Each method should be documented. Describe what the method is supposed to do. If you end up writing an essay about the method, perhaps it is too complicated?</li>
-            </ul>
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="contributing-style-guide">
-            <h3>Style Guide</h3>
-            <p> Please follow the style already in place. If you are an Eclipse user, follow the guidelines for Eclipse below and please load the formatting template and then you won't even have to think about it, Eclipse will do it for you.
-            </p>
-            <p>In general, the aboutsip code base is following regular java style convention but here are the more important points (and some differences)
-            <ul>
-                <li>No tabs – ever</li>
-                <li>Indent is 4 spaces</li>
-                <li>The line width is 120 characters so please do not cut it off at 80 (we all have screens with high enough resolution these days).</li>
-                <li>Use final everywhere! (once again, you can have Eclipse fix this for you).</li>
-                <li>Use this everywhere! (Eclipse will fix it for you)</li>
-            </ul>
-            </p>
-         </div><!--/span-->
-
-         <div class="col-xs-12" id="license">
-            <h1>License</h1>
-            <p>pkts.io and all projects under aboutsip.com are released under the terms of the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>
-            </p>
-         </div><!--/span-->
-
-   </div><!--/row-->
-</div><!--/span-->
 
 
+<div class="row col-md-9"> 
+       <h3 id="intro">Intro</h3>
+    <h3 id="intro-load-pcap">Intro</h3>
+    <h3 id="intro-streams">Intro</h3>
+    <h3 id="intro-consume-it">Intro</h3>
+    <h3 id="intro-javadoc">Intro</h3>
 
 
-   <div class="col-md-3">
+</div>
+
+   
+      <div class="col-md-3">
    <div class="hidden-print hidden-xs hidden-sm affix" role="complementary">
     <div class="bs-docs-sidebar">
       <ul class="nav">
@@ -243,7 +99,9 @@
 </div>
 
 
+   
 
+</div>
     </div><!--/.container-->
     <hr>
    <div class="footer">

@@ -1,0 +1,15 @@
+{% include header.html %}
+
+<div class="row row-offcanvas row-offcanvas-right">
+
+
+<div class="row col-md-9"> 
+   {{ content }}
+</div>
+
+   {% if page.menu != null %}
+      {% include {{page.menu}} %}
+   {%endif%}
+
+</div>
+{% include footer.html %}
