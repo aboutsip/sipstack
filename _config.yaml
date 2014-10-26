@@ -5,6 +5,7 @@ domain: aboutsip.github.com
 author: Jonas Borjesson
 email: jonas@aboutsip.com
 title: sipstack.io
+sipstackio_version: 0.1.0
 
 url: "http://localhost:4000"
 
