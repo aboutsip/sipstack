@@ -1,0 +1,26 @@
+{% highlight java %}
+public final class UAS {
+
+    public static void main(final String[] args) throws Exception {
+        final UASHandler uas = new UASHandler(); // (1)
+        final EventLoopGroup udpGroup = new NioEventLoopGroup(); // (2)
+
+        final Bootstrap b = new Bootstrap(); // (3)
+        b.group(udpGroup)
+        .channel(NioDatagramChannel.class)
+        .handler(new ChannelInitializer<DatagramChannel>() {
+            @Override
+            protected void initChannel(final DatagramChannel ch) throws Exception {
+                final ChannelPipeline pipeline = ch.pipeline();
+                pipeline.addLast("decoder", new SipMessageDatagramDecoder()); // (4)
+                pipeline.addLast("encoder", new SipMessageEncoder()); // (5)
+                pipeline.addLast("handler", uas); // (6)
+            }
+        });
+
+        final InetSocketAddress socketAddress = new InetSocketAddress("127.0.0.1", 5060); // (7)
+        final ChannelFuture f = b.bind(socketAddress).sync(); // (8)
+        f.channel().closeFuture().await();
+    }
+}
+{% endhighlight %}

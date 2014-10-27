@@ -1,0 +1,21 @@
+{% highlight java %}
+@Sharable
+public final class UASHandler extends SimpleChannelInboundHandler<SipMessageEvent> {
+
+    @Override
+    protected void channelRead0(final ChannelHandlerContext ctx, final SipMessageEvent event) 
+                               throws Exception {
+        final SipMessage msg = event.getMessage();
+
+        if (msg.isAck()) {
+            return;
+        }
+
+        if (msg.isRequest()) {
+            final SipResponse response = msg.createResponse(200);
+            event.getConnection().send(response);
+        }
+    }
+
+}
+{% endhighlight %}
