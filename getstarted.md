@@ -13,6 +13,8 @@ This guide will take you through the process of creating a simple UAS applicatio
 
 Sipstack.io is a framework whose primary goal is to provide you with a light-weight, ready-to-go sipstack with the all the necessary functionality needed by a production-ready SIP application, but without the fuzz that larger application containers typically come with.
 
+All code is opensource and hosted on [github](https://github.com/aboutsip) and contributions are encouraged and highly appreciated.
+
 <h2 id="getting-started-netty">Netty for network access</h2>
 
 Any SIP stack needs a blazingly fast and reliable network stack and [netty.io](http://www.netty.io) is just that. Netty also has a large install base, an active community and over 10 years of development behind it, making it an excellent base for sipstack.io. If you are familiar with Netty, then integrating raw SIP support to your own SIP enabled application should be a breeze.
