@@ -15,7 +15,7 @@
   <name>Sipstack IO</name>
   <groupId>io.sipstack</groupId>
   <artifactId>sipstack-parent</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>Sipstack IO - The next generation SIP stack</description>
 
