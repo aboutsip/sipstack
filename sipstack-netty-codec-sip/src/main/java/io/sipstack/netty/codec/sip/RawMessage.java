@@ -114,7 +114,7 @@ public final class RawMessage {
          * bail on the 'T', then we would once again move over to the state
          * {@link #GET_HEADERS}.
          */
-        IS_CONTENT_LENGTH_HEADER, CONSUME_COLON, CONSUME_LWS, EXPECT_COLON, CONSUME_DIGIT;
+        IS_CONTENT_LENGTH_HEADER, CONSUME_COLON, CONSUME_LWS, EXPECT_COLON, CONSUME_DIGIT, END_OF_HEADERS;
     }
 
     /**
@@ -172,7 +172,7 @@ public final class RawMessage {
             writeToHeaders(b);
             if (doubleCRLF(b)) {
                 if (getContentLength() > 0) {
-                    this.state = State.GET_PAYLOAD;
+                    this.state = State.END_OF_HEADERS;
                 } else {
                     this.state = State.GET_PAYLOAD;
                     this.done = true;
@@ -221,6 +221,10 @@ public final class RawMessage {
             writeToPayload(b);
             if (payloadCompleted()) {
                 this.done = true;
+            }
+        } else if (this.state == State.END_OF_HEADERS) {
+            if (isCRLF(b)) {
+                this.state = State.GET_PAYLOAD;
             }
         } else {
             throw new RuntimeException("Unknown state " + this.state);
